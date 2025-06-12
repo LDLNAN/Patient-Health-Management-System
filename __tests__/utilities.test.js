@@ -1,5 +1,4 @@
 // Unit tests for utility functions
-// This file contains tests for input cleaning and email validation utilities
 
 const { cleanInput, validateEmail } = require('../mainapp.js')
 
@@ -11,7 +10,7 @@ describe('Utility Functions', () => {
 
         test('Should remove < and > characters', () => { // IMPORTANT FOR SECURITY
             expect(cleanInput('hello<example>world')).toBe('helloexampleworld')
-            expect(cleanInput('<example>example</example>')).toBe('example/tag')
+            expect(cleanInput('<example>example</example>')).toBe('exampleexample/example')
         })
 
         test('Should handle trimming and character removal', () => {

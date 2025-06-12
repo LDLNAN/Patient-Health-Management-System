@@ -22,7 +22,7 @@ const EMPTY_USER_TEMPLATE = {
         state: "",
         zipCode: "",
     },
-    password: "", // Will be hashed in real implementation
+    password: "", // Should be hashed in real implementation
     firstName: "",
     lastName: "",
     gender: "",
@@ -69,13 +69,30 @@ let currentUser = null
 // This section contains utility functions that can be used throughout the application.
 
 // [Utility] Basic input cleaning
-function cleanInput(input) {
-    //TODO: Implement
+const cleanInput = (input) => {
+    // Handle non-string inputs by returning empty string
+    if (typeof input !== 'string') {
+        return '';
+    }
+    
+    // Trim whitespace and remove < > characters to prevent malicious external excecution
+    return input.trim().replace(/[<>]/g, '');
 }
 
 // [Logic] Validate email format
-function validateEmail(email) {
-    // TODO: Implement
+// Found: https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
+// NOTE: Email's should be confirmed with proper verification - this just checks the format is correct.
+const validateEmail = (email) => {
+    // Handle null, undefined, or non-string values
+    if (!email || typeof email !== 'string') {
+        return false;
+    }
+    
+    return String(email)
+        .toLowerCase()
+        .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        ) !== null;
 }
 
 // ---- Handlers ----
@@ -89,6 +106,27 @@ function validateEmail(email) {
 
 // ---- Flow ----
 // This section manages the flow of the application, including navigation, what happens when.
+
+// ---- Menu Configs ----
+// This section contains menu item configurations for the application interface.
+
+// Login screen menu items
+const LOGIN_MENU_ITEMS = {
+    1: {
+        title: "1. Login (Existing user)",
+        action: "startUserLogin"
+    },
+    2: {
+        title: "2. Create an account (New user)",
+        action: "startUserCreate"
+    }
+}
+
+// ---- Form Configs ----
+// This section contains form configurations for data input.
+
+// ---- Record Configs ----
+// This section contains record configurations for data management.
 
 // ---- Main ----
 // This section is the entry point of the application, where everything comes together and starts running.
@@ -107,5 +145,5 @@ module.exports = {
     EMPTY_USER_TEMPLATE,
     EMPTY_PATIENT_TEMPLATE,
     cleanInput,
-    validateEmail
+    validateEmail,
 }
