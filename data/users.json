@@ -1,1 +1,236 @@
-[]
+[
+  {
+    "nhi": null,
+    "id": 12345,
+    "email": "admin@email.com",
+    "phone": "000-000-0000",
+    "address": {
+      "street": "123 Admin Street",
+      "city": "City",
+      "state": "State",
+      "zipCode": "8008"
+    },
+    "password": "admin123",
+    "firstName": "System",
+    "lastName": "Administrator",
+    "gender": "Other",
+    "dateOfBirth": "0001-01-01",
+    "role": "admin"
+  },
+  {
+    "nhi": null,
+    "id": 22333,
+    "email": "pro@email.com",
+    "phone": "000-000-0000",
+    "address": {
+      "street": "123 Pro Drive",
+      "city": "City",
+      "state": "State",
+      "zipCode": "8008"
+    },
+    "password": "pro123",
+    "firstName": "Mista.",
+    "lastName": "Miyagi",
+    "gender": "Male",
+    "dateOfBirth": "1984-06-22",
+    "role": "professional"
+  },
+  {
+    "nhi": 100001,
+    "id": null,
+    "firstName": "Daniel",
+    "lastName": "LaRusso",
+    "dateOfBirth": "1984-06-22",
+    "gender": "Male",
+    "phone": "021-555-0003",
+    "email": "patient@email.com",
+    "password": "patient123",
+    "address": {
+      "street": "888 Dojo Lane",
+      "city": "Newark",
+      "state": "New Jersey",
+      "zipCode": "8008"
+    },
+    "role": "patient"
+  },
+  {
+    "nhi": 659287,
+    "id": null,
+    "firstName": "Barney",
+    "lastName": "Bernhard",
+    "email": "Barney.Bernhard@gmail.com",
+    "phone": "1-759-561-4088 x736",
+    "address": {
+      "street": "32386 Cumberland Street",
+      "city": "Mikeside",
+      "state": "Tennessee",
+      "zipCode": "10289-8446"
+    },
+    "password": "7rBzz4P1PbSC",
+    "gender": "Trans female",
+    "dateOfBirth": "1986-05-19",
+    "role": "patient"
+  },
+  {
+    "nhi": 935471,
+    "id": null,
+    "firstName": "Kade",
+    "lastName": "Turner",
+    "email": "Kade.Turner49@yahoo.com",
+    "phone": "(743) 371-2010",
+    "address": {
+      "street": "3416 Maple Close",
+      "city": "Koeppstead",
+      "state": "South Dakota",
+      "zipCode": "60350-4221"
+    },
+    "password": "ozsMGcwzTty5",
+    "gender": "Cisgender woman",
+    "dateOfBirth": "1983-06-01",
+    "role": "patient"
+  },
+  {
+    "nhi": 756683,
+    "id": null,
+    "firstName": "Russel",
+    "lastName": "Thompson",
+    "email": "Russel_Thompson82@gmail.com",
+    "phone": "204.301.5113 x0911",
+    "address": {
+      "street": "3556 Randi Spur",
+      "city": "Baronside",
+      "state": "Virginia",
+      "zipCode": "97705"
+    },
+    "password": "0aSjMW3jYjcQ",
+    "gender": "Gender neutral",
+    "dateOfBirth": "1941-04-06",
+    "role": "patient"
+  },
+  {
+    "nhi": 351110,
+    "id": null,
+    "firstName": "Celestino",
+    "lastName": "Kreiger",
+    "email": "Celestino.Kreiger@hotmail.com",
+    "phone": "(933) 289-6779 x43986",
+    "address": {
+      "street": "46607 Violet Tunnel",
+      "city": "Brownsville",
+      "state": "Kansas",
+      "zipCode": "78114"
+    },
+    "password": "Dy1rB05PaH_D",
+    "gender": "Androgyne",
+    "dateOfBirth": "1957-05-17",
+    "role": "patient"
+  },
+  {
+    "nhi": 883280,
+    "id": null,
+    "firstName": "Ora",
+    "lastName": "Kunde",
+    "email": "Ora.Kunde49@gmail.com",
+    "phone": "555.499.7717 x10009",
+    "address": {
+      "street": "1565 State Avenue",
+      "city": "Ephraimside",
+      "state": "California",
+      "zipCode": "85428"
+    },
+    "password": "eH_DsM0o7wqy",
+    "gender": "Trans",
+    "dateOfBirth": "1980-08-06",
+    "role": "patient"
+  },
+  {
+    "nhi": 539039,
+    "id": null,
+    "firstName": "Riley",
+    "lastName": "Reichel",
+    "email": "Riley.Reichel@gmail.com",
+    "phone": "890-629-5174",
+    "address": {
+      "street": "6337 Wintheiser Cliff",
+      "city": "New Cletaboro",
+      "state": "New Mexico",
+      "zipCode": "71065-9498"
+    },
+    "password": "OLqz3pW3MKFN",
+    "gender": "Other",
+    "dateOfBirth": "1971-07-24",
+    "role": "patient"
+  },
+  {
+    "nhi": 240391,
+    "id": null,
+    "firstName": "Tony",
+    "lastName": "Labadie",
+    "email": "Tony.Labadie80@yahoo.com",
+    "phone": "256-889-5524 x8410",
+    "address": {
+      "street": "74037 Medhurst Center",
+      "city": "South Dariusport",
+      "state": "Mississippi",
+      "zipCode": "12388-3867"
+    },
+    "password": "JrMXQL8J08da",
+    "gender": "Intersex man",
+    "dateOfBirth": "1987-07-26",
+    "role": "patient"
+  },
+  {
+    "nhi": 477184,
+    "id": null,
+    "firstName": "Darryl",
+    "lastName": "Ernser",
+    "email": "Darryl_Ernser25@hotmail.com",
+    "phone": "1-983-293-7101 x62982",
+    "address": {
+      "street": "247 Newell Dale",
+      "city": "North Aleen",
+      "state": "California",
+      "zipCode": "17044"
+    },
+    "password": "qfd8GH4mY12P",
+    "gender": "Trans woman",
+    "dateOfBirth": "2013-05-27",
+    "role": "patient"
+  },
+  {
+    "nhi": 696204,
+    "id": null,
+    "firstName": "Cameron",
+    "lastName": "Ondricka",
+    "email": "Cameron.Ondricka@gmail.com",
+    "phone": "(646) 727-2364",
+    "address": {
+      "street": "20056 Clarence Street",
+      "city": "Fort Luciestad",
+      "state": "Iowa",
+      "zipCode": "03398-5874"
+    },
+    "password": "E0ZG5EK90eRx",
+    "gender": "Trans male",
+    "dateOfBirth": "1987-01-21",
+    "role": "patient"
+  },
+  {
+    "nhi": 716969,
+    "id": null,
+    "firstName": "Jerald",
+    "lastName": "Boyle",
+    "email": "Jerald.Boyle60@gmail.com",
+    "phone": "502.395.5922 x72127",
+    "address": {
+      "street": "58983 Daniel Manor",
+      "city": "Reading",
+      "state": "Mississippi",
+      "zipCode": "62142"
+    },
+    "password": "ahWQSb28Iyzu",
+    "gender": "Cisgender male",
+    "dateOfBirth": "1924-09-01",
+    "role": "patient"
+  }
+]

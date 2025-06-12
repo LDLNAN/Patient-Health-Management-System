@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/LDLNAN/Patient-Health-Management-System#readme",
   "devDependencies": {
+    "@faker-js/faker": "^9.8.0",
     "jest": "^30.0.0"
   }
 }

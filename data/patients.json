@@ -1,1 +1,322 @@
-[]
+[
+  {
+    "nhi": 100001,
+    "firstName": "Daniel",
+    "lastName": "LaRusso",
+    "dateOfBirth": "1984-06-22",
+    "gender": "Male",
+    "phone": "021-555-0003",
+    "email": "patient@email.com",
+    "password": "patient123",
+    "address": {
+      "street": "888 Dojo Lane",
+      "city": "Newark",
+      "state": "New Jersey",
+      "zipCode": "8008",
+      "country": "USA"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "Cobra Venom"
+      ],
+      "currentMedications": [
+        "Viagra"
+      ],
+      "bloodType": "O+",
+      "notes": "Built different."
+    },
+    "assignedGP": 22333
+  },
+  {
+    "nhi": 659287,
+    "firstName": "Barney",
+    "lastName": "Bernhard",
+    "dateOfBirth": "1986-05-19",
+    "gender": "Trans female",
+    "phone": "1-759-561-4088 x736",
+    "email": "Barney.Bernhard@gmail.com",
+    "password": "7rBzz4P1PbSC",
+    "address": {
+      "street": "97461 Rowena Estate",
+      "city": "Lake Lexus",
+      "state": "Mississippi",
+      "zipCode": "48896",
+      "country": "Jordan"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "Latex",
+        "Shellfish"
+      ],
+      "currentMedications": [
+        "Paracetamol"
+      ],
+      "bloodType": "B-",
+      "notes": "Caveo corpus mollitia tandem quibusdam surculus vomito audentia considero molestiae."
+    },
+    "assignedGP": 22333
+  },
+  {
+    "nhi": 935471,
+    "firstName": "Kade",
+    "lastName": "Turner",
+    "dateOfBirth": "1983-06-01",
+    "gender": "Cisgender woman",
+    "phone": "(743) 371-2010",
+    "email": "Kade.Turner49@yahoo.com",
+    "password": "ozsMGcwzTty5",
+    "address": {
+      "street": "994 Fourth Avenue",
+      "city": "Casa Grande",
+      "state": "Mississippi",
+      "zipCode": "34778-8010",
+      "country": "Puerto Rico"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "Dairy",
+        "Latex",
+        "None"
+      ],
+      "currentMedications": [
+        "Multivitamin"
+      ],
+      "bloodType": "AB+",
+      "notes": "Quisquam atque arbustum condico ambulo studio eius cribro ventus."
+    },
+    "assignedGP": 22333
+  },
+  {
+    "nhi": 756683,
+    "firstName": "Russel",
+    "lastName": "Thompson",
+    "dateOfBirth": "1941-04-06",
+    "gender": "Gender neutral",
+    "phone": "204.301.5113 x0911",
+    "email": "Russel_Thompson82@gmail.com",
+    "password": "0aSjMW3jYjcQ",
+    "address": {
+      "street": "78009 Ardella Underpass",
+      "city": "Spokane Valley",
+      "state": "Idaho",
+      "zipCode": "96849-1088",
+      "country": "Mali"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "None"
+      ],
+      "currentMedications": [],
+      "bloodType": "AB+",
+      "notes": "Coerceo ultio copiose dicta."
+    },
+    "assignedGP": 22333
+  },
+  {
+    "nhi": 351110,
+    "firstName": "Celestino",
+    "lastName": "Kreiger",
+    "dateOfBirth": "1957-05-17",
+    "gender": "Androgyne",
+    "phone": "(933) 289-6779 x43986",
+    "email": "Celestino.Kreiger@hotmail.com",
+    "password": "Dy1rB05PaH_D",
+    "address": {
+      "street": "422 Doyle Ways",
+      "city": "Klockocester",
+      "state": "Nebraska",
+      "zipCode": "81242",
+      "country": "Kyrgyz Republic"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "Latex",
+        "Peanuts",
+        "None"
+      ],
+      "currentMedications": [
+        "None",
+        "Aspirin",
+        "Vitamin D"
+      ],
+      "bloodType": "AB+",
+      "notes": "Vulgus curriculum antepono ceno color."
+    },
+    "assignedGP": 22333
+  },
+  {
+    "nhi": 883280,
+    "firstName": "Ora",
+    "lastName": "Kunde",
+    "dateOfBirth": "1980-08-06",
+    "gender": "Trans",
+    "phone": "555.499.7717 x10009",
+    "email": "Ora.Kunde49@gmail.com",
+    "password": "eH_DsM0o7wqy",
+    "address": {
+      "street": "97496 Wintheiser Roads",
+      "city": "North Monserratmouth",
+      "state": "Kentucky",
+      "zipCode": "44225",
+      "country": "Sri Lanka"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "Peanuts",
+        "Latex"
+      ],
+      "currentMedications": [
+        "Aspirin",
+        "Paracetamol"
+      ],
+      "bloodType": "A-",
+      "notes": "Ratione denuncio tantillus thesis strenuus velociter in."
+    },
+    "assignedGP": 22333
+  },
+  {
+    "nhi": 539039,
+    "firstName": "Riley",
+    "lastName": "Reichel",
+    "dateOfBirth": "1971-07-24",
+    "gender": "Other",
+    "phone": "890-629-5174",
+    "email": "Riley.Reichel@gmail.com",
+    "password": "OLqz3pW3MKFN",
+    "address": {
+      "street": "9561 Ernesto Burg",
+      "city": "South Joany",
+      "state": "Idaho",
+      "zipCode": "09698-9595",
+      "country": "Chile"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "Peanuts",
+        "Dairy",
+        "Shellfish"
+      ],
+      "currentMedications": [
+        "Multivitamin",
+        "Paracetamol",
+        "Aspirin"
+      ],
+      "bloodType": "AB-",
+      "notes": "Creta suus solus culpo cerno debeo urbanus."
+    },
+    "assignedGP": 22333
+  },
+  {
+    "nhi": 240391,
+    "firstName": "Tony",
+    "lastName": "Labadie",
+    "dateOfBirth": "1987-07-26",
+    "gender": "Intersex man",
+    "phone": "256-889-5524 x8410",
+    "email": "Tony.Labadie80@yahoo.com",
+    "password": "JrMXQL8J08da",
+    "address": {
+      "street": "71201 W Park Street",
+      "city": "South Gunner",
+      "state": "Massachusetts",
+      "zipCode": "31035",
+      "country": "Vanuatu"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "Dairy"
+      ],
+      "currentMedications": [],
+      "bloodType": "B+",
+      "notes": "Candidus viriliter quo antepono crepusculum patrocinor."
+    },
+    "assignedGP": 22333
+  },
+  {
+    "nhi": 477184,
+    "firstName": "Darryl",
+    "lastName": "Ernser",
+    "dateOfBirth": "2013-05-27",
+    "gender": "Trans woman",
+    "phone": "1-983-293-7101 x62982",
+    "email": "Darryl_Ernser25@hotmail.com",
+    "password": "qfd8GH4mY12P",
+    "address": {
+      "street": "78379 Brook Lane",
+      "city": "New Leon",
+      "state": "California",
+      "zipCode": "30643-4450",
+      "country": "Palestine"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "Dairy",
+        "Shellfish"
+      ],
+      "currentMedications": [
+        "Paracetamol"
+      ],
+      "bloodType": "A+",
+      "notes": "Cubitum cruciamentum absconditus."
+    },
+    "assignedGP": 22333
+  },
+  {
+    "nhi": 696204,
+    "firstName": "Cameron",
+    "lastName": "Ondricka",
+    "dateOfBirth": "1987-01-21",
+    "gender": "Trans male",
+    "phone": "(646) 727-2364",
+    "email": "Cameron.Ondricka@gmail.com",
+    "password": "E0ZG5EK90eRx",
+    "address": {
+      "street": "3204 Sterling Brook",
+      "city": "Ryannboro",
+      "state": "Maine",
+      "zipCode": "80054-3915",
+      "country": "Guernsey"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "Peanuts",
+        "Shellfish",
+        "Dairy"
+      ],
+      "currentMedications": [
+        "Paracetamol"
+      ],
+      "bloodType": "AB-",
+      "notes": "Crepusculum deputo collum alias sit color cavus cuppedia."
+    },
+    "assignedGP": 22333
+  },
+  {
+    "nhi": 716969,
+    "firstName": "Jerald",
+    "lastName": "Boyle",
+    "dateOfBirth": "1924-09-01",
+    "gender": "Cisgender male",
+    "phone": "502.395.5922 x72127",
+    "email": "Jerald.Boyle60@gmail.com",
+    "password": "ahWQSb28Iyzu",
+    "address": {
+      "street": "32624 Trey Gateway",
+      "city": "Youngstown",
+      "state": "Montana",
+      "zipCode": "75901-8668",
+      "country": "Austria"
+    },
+    "medicalHistory": {
+      "allergies": [
+        "Peanuts"
+      ],
+      "currentMedications": [
+        "None"
+      ],
+      "bloodType": "B-",
+      "notes": "Canis avaritia taedium derideo."
+    },
+    "assignedGP": 22333
+  }
+]
