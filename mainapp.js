@@ -10,6 +10,11 @@ const readline = require('readline')
 const USERS_DB_PATH = './data/users.json'
 const PATIENTS_DB_PATH = './data/patients.json'
 
+const TITLE = 'HEALTH MANAGEMENT SYSTEM'
+
+const HEADER_LOGIN = 'Log-in'
+
+
 // Empty templates for new account creation and patient registration
 const EMPTY_USER_TEMPLATE = {
     nhi: null, // Will be filled for patients, null for professionals
@@ -119,6 +124,10 @@ const createMenu = (menu_obj) => { // Returns a string
     const titles = menuItems.map(item => item.title)
     return titles.join("\n")
 }
+
+const handleMenu = (menu_obj) => {
+
+}
 // ---- Data ----
 // This section is for managing data, including fetching, storing, and manipulating data used in the application.
 
@@ -222,11 +231,34 @@ const displayScreen = (currentScreen) => {
 // ---- Flow ----
 // This section manages the flow of the application, including navigation, what happens when.
 
+const goToMenu = (menu_obj) => {
+    currentScreen.title = TITLE
+    currentScreen.header = menu_obj.name
+    currentScreen.body = createMenu(menu_obj)
+    
+    // Calculate number of menu items (- the 'name' property)
+    const menuItemCount = Object.keys(menu_obj).length - 1
+    currentScreen.prompt = "Select an option (1-" + menuItemCount.toString() + ")"
+    
+    currentScreen.message = null
+    displayScreen(currentScreen)
+    handleMenu(menu_obj)
+}
+
+const goToForm = (form_obj) => {
+
+}
+
+const goToRecord = (record_obj) => {
+    
+}
+
 // ---- Menu Configs ----
 // This section contains menu item configurations for the application interface.
 
 // Login screen menu items
 const LOGIN_MENU_ITEMS = {
+    name: "User Authentication",
     1: {
         title: "1. Login (Existing user)",
         action: "startUserLogin"
@@ -262,11 +294,16 @@ module.exports = {
     cleanInput,
     validateEmail,
     createMenu,
+    handleMenu,
+    currentScreen,  // Add this
     displayTitle,
     displayHeader,
     displayBody,
     displayPrompt,
     displayMessage,
     displayScreen,
-    LOGIN_MENU_ITEMS
+    LOGIN_MENU_ITEMS,
+    goToMenu,
+    goToForm,
+    goToRecord
 }
