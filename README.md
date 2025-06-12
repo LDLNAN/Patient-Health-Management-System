@@ -63,5 +63,10 @@ This project adheres to the Extreme Programming (XP) methodology, with an emphas
 
 - [x]  Create databases with ‘Faker’
 - [x]  Implement JEST testing
-- [ ]  Implement string cleaning
-- [ ]  Implement email REGEX
+- [x]  Implement string cleaning
+- [x]  Implement email REGEX
+- [X]  Create Menu, Form, and Record objects
+- [ ]  Implement display
+- [ ]  Implement menu handling
+- [ ]  Implementa form handling
+- [ ]  Implement record handling

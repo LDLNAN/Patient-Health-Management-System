@@ -65,6 +65,14 @@ const rl = readline.createInterface({
 // Global variable to store current user session.
 let currentUser = null
 
+let currentScreen = {
+    title: null,
+    message: null,
+    header: null,
+    body: null,
+    prompt: null
+}
+
 // ---- Utilities ----
 // This section contains utility functions that can be used throughout the application.
 
@@ -97,13 +105,42 @@ const validateEmail = (email) => {
 
 // ---- Handlers ----
 // This section is for handling events, such as user prompts, and menu/form creation.
+const createMenu = (menu_obj) => {
 
+}
 // ---- Data ----
 // This section is for managing data, including fetching, storing, and manipulating data used in the application.
 
 // ---- Display ----
-// This section is for managing the user interface (basic CLI), console.logs, handling user interactions, and updating the UI.
+// This section is for managing the user interface (CLI-ish), console.logs, handling user interactions, and updating the UI.
+const displayTitle = (title) => {
 
+}
+const displayHeader = (header) => {
+
+}
+const displayBody = (body) => {
+
+}
+const displayPrompt = (prompt) => {
+
+}
+const displayMessage = (message) => {
+
+}
+const displayScreen = (currentScreen) => {
+    console.clear()
+    displayTitle(title)
+    if (message) {
+        displayMessage(message)
+        displayPrompt(prompt)
+        return
+    }
+    displayHeader(header)
+    displayBody(body)
+    displayPrompt(prompt)
+    
+}
 // ---- Flow ----
 // This section manages the flow of the application, including navigation, what happens when.
 
@@ -146,4 +183,11 @@ module.exports = {
     EMPTY_PATIENT_TEMPLATE,
     cleanInput,
     validateEmail,
+    displayTitle,
+    displayHeader,
+    displayBody,
+    displayPrompt,
+    displayMessage,
+    displayScreen,
+    LOGIN_MENU_ITEMS
 }
