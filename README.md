@@ -66,7 +66,15 @@ This project adheres to the Extreme Programming (XP) methodology, with an emphas
 - [x]  Implement string cleaning
 - [x]  Implement email REGEX
 - [X]  Create Menu, Form, and Record objects
-- [ ]  Implement display
+- [X]  Implement display
 - [ ]  Implement menu handling
-- [ ]  Implementa form handling
+- [ ]  Implement form handling
 - [ ]  Implement record handling
+- [ ]  Implement log-in & account creation
+- [ ]  Implement record fetching
+- [ ]  Implement find by NHI
+- [ ]  Implement record saving
+- [ ]  Implement record editing
+- [ ]  Implement patient flow
+- [ ]  Implement professional flow
+- [ ]  Implement admin flow

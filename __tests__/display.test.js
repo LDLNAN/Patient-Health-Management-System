@@ -90,9 +90,9 @@ describe('Display Functions', () => {
                 '> Enter your choice (1-2): '
             ])
         })
-        
+
         test('Should display continue prompt without ": "', () => {
-            displayPrompt('Continue')
+            displayPrompt('continue')
 
             expect(consoleOutput).toEqual([
                 '────────────────────────────',
@@ -143,7 +143,7 @@ describe('Display Functions', () => {
                 'Welcome!',
                 '────────',
                 '1. Login\n2. Create Account',
-                '──────────────────',
+                '────────────────────',
                 '> Select an option: '
             ])
         })

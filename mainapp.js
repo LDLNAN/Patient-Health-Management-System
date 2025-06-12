@@ -76,7 +76,6 @@ let currentScreen = {
 // ---- Utilities ----
 // This section contains utility functions that can be used throughout the application.
 
-// [Utility] Basic input cleaning
 const cleanInput = (input) => {
     // Handle non-string inputs by returning empty string
     if (typeof input !== 'string') {
@@ -87,7 +86,6 @@ const cleanInput = (input) => {
     return input.trim().replace(/[<>]/g, '');
 }
 
-// [Logic] Validate email format
 // Found: https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
 // NOTE: Email's should be confirmed with proper verification - this just checks the format is correct.
 const validateEmail = (email) => {
@@ -114,32 +112,99 @@ const createMenu = (menu_obj) => {
 // ---- Display ----
 // This section is for managing the user interface (CLI-ish), console.logs, handling user interactions, and updating the UI.
 const displayTitle = (title) => {
-
-}
-const displayHeader = (header) => {
-
-}
-const displayBody = (body) => {
-
-}
-const displayPrompt = (prompt) => {
-
-}
-const displayMessage = (message) => {
-
-}
-const displayScreen = (currentScreen) => {
-    console.clear()
-    displayTitle(title)
-    if (message) {
-        displayMessage(message)
-        displayPrompt(prompt)
-        return
+    // Don't display if title is empty or null
+    if (!title) {
+        return;
     }
-    displayHeader(header)
-    displayBody(body)
-    displayPrompt(prompt)
     
+    console.log(title);
+    // Create underline with ═ characters matching title length
+    console.log('═'.repeat(title.length));
+}
+
+const displayHeader = (header) => {
+    // Handle null/undefined by not displaying anything
+    if (header === null || header === undefined) { // Needed else empty strings fail?
+        return;
+    }
+    
+    // Always show the header (even if empty string)
+    console.log(header);
+    
+    // Only show underline if header has content
+    if (header) {
+        console.log('─'.repeat(header.length));
+    }
+}
+
+const displayBody = (body) => {
+    // Don't display if body is empty or null
+    if (!body) {
+        return;
+    }
+    console.log(body);
+}
+
+const displayPrompt = (prompt) => {
+    // Handle null prompt case - don't display anything
+    if (prompt === null || prompt === undefined) { // Needed else empty strings fail?
+        return;
+    }
+    
+    // Handle empty string prompt case
+    if (prompt === '') {
+        console.log('...');
+        return;
+    }
+    
+    // Special handling for "Continue" prompt
+    if (prompt === 'continue') {
+        const continueLine = '> Press enter to continue...';
+        console.log('─'.repeat(continueLine.length));
+        console.log(continueLine);
+    } else {
+        // Standard prompt with decoration line matching the full prompt line length
+        const promptLine = '> ' + prompt + ': ';
+        console.log('─'.repeat(promptLine.length));
+        console.log(promptLine);
+    }
+}
+
+const displayMessage = (message) => {
+    // Don't display if message is empty or null
+    if (!message) {
+        return;
+    }
+    
+    console.log('[' + message + ']');
+}
+
+const displayScreen = (currentScreen) => {
+    // Handle null screen object
+    if (!currentScreen) {
+        return;
+    }
+    
+    console.clear();
+    
+    // Handle empty screen object - just clear and return
+    if (Object.keys(currentScreen).length === 0) {
+        return;
+    }
+    
+    // If there's a message, show message mode (title + message + continue prompt)
+    if (currentScreen.message) {
+        displayTitle(currentScreen.title);
+        displayMessage(currentScreen.message);
+        displayPrompt('continue');
+        return;
+    }
+    
+    // Normal mode - display all components
+    displayTitle(currentScreen.title);
+    displayHeader(currentScreen.header);
+    displayBody(currentScreen.body);
+    displayPrompt(currentScreen.prompt);
 }
 // ---- Flow ----
 // This section manages the flow of the application, including navigation, what happens when.
