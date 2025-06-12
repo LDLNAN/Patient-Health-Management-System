@@ -104,7 +104,7 @@ const validateEmail = (email) => {
 // ---- Handlers ----
 // This section is for handling events, such as user prompts, and menu/form creation.
 const createMenu = (menu_obj) => {
-
+    // TODO
 }
 // ---- Data ----
 // This section is for managing data, including fetching, storing, and manipulating data used in the application.
@@ -248,6 +248,7 @@ module.exports = {
     EMPTY_PATIENT_TEMPLATE,
     cleanInput,
     validateEmail,
+    createMenu,
     displayTitle,
     displayHeader,
     displayBody,
