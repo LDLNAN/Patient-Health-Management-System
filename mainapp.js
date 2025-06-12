@@ -68,6 +68,16 @@ let currentUser = null
 // ---- Utilities ----
 // This section contains utility functions that can be used throughout the application.
 
+// [Utility] Basic input cleaning
+function cleanInput(input) {
+    //TODO: Implement
+}
+
+// [Logic] Validate email format
+function validateEmail(email) {
+    // TODO: Implement
+}
+
 // ---- Handlers ----
 // This section is for handling events, such as user prompts, and menu/form creation.
 
@@ -95,5 +105,7 @@ const startApp = () => {
 module.exports = {
     startApp,
     EMPTY_USER_TEMPLATE,
-    EMPTY_PATIENT_TEMPLATE
+    EMPTY_PATIENT_TEMPLATE,
+    cleanInput,
+    validateEmail
 }

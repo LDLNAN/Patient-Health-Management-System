@@ -61,5 +61,7 @@ This project adheres to the Extreme Programming (XP) methodology, with an emphas
 
 ## TO-DO:
 
-- [ ]  Create databases with ‘Faker’
-- [ ]  Implement JEST testing
+- [x]  Create databases with ‘Faker’
+- [x]  Implement JEST testing
+- [ ]  Implement string cleaning
+- [ ]  Implement email REGEX
