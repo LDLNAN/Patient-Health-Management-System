@@ -21,6 +21,11 @@ const rl = readline.createInterface({
 // Global variable to store current user session.
 let currentUser = null
 
+// Ensure data directories and files exist
+function initialiseDataFiles() {
+
+}
+
 // ---- Utilities ----
 // This section contains utility functions that can be used throughout the application.
 
@@ -40,6 +45,7 @@ let currentUser = null
 // This section is the entry point of the application, where everything comes together and starts running.
 
 function startApp() {
+    initializeDataFiles()
 }
 
 startApp()
