@@ -103,8 +103,21 @@ const validateEmail = (email) => {
 
 // ---- Handlers ----
 // This section is for handling events, such as user prompts, and menu/form creation.
-const createMenu = (menu_obj) => {
-    // TODO
+const createMenu = (menu_obj) => { // Returns a string
+    // Handle null or undefined input
+    if (!menu_obj) {
+        return ""
+    }
+    
+    // Handle empty object
+    if (Object.keys(menu_obj).length === 0) {
+        return ""
+    }
+    
+    // Extract titles from menu items and join with newlines
+    const menuItems = Object.values(menu_obj)
+    const titles = menuItems.map(item => item.title)
+    return titles.join("\n")
 }
 // ---- Data ----
 // This section is for managing data, including fetching, storing, and manipulating data used in the application.
