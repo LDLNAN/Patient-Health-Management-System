@@ -4,6 +4,7 @@
 
 CLI Patient Health Record Management System student project, developed as a proof of concept. The primary goal of this project is to create a secure, efficient, and maintainable system for managing individual patient health profiles. It aims to address the common challenge of fragmented patient information, providing a centralized solution for healthcare professionals and patients.
 
+
 ## How to Run the Application
 
 **Clone the Repository:**
@@ -30,7 +31,7 @@ npm install
 node mainapp.js
 ```
 
-## How to Run Tests
+## How to Run Tests (WILL NOT PASS CURRENTLY)
 
 This project uses JEST for unit testing.
 
@@ -79,9 +80,16 @@ ABANDON TDD FOR THIS PART
 - Created roleMenu function, that returns the correct menu for a users role
 - Updated process form to navigate based on success
 
+### 2025-06-15
+- Condense validation to one function (validateField)
+- Implemented patient record functionality (showPatientRecord, showMyRecord)
+- Implemented patient list viewing, and NHI search form
+- Updated menu OBJs to work, and reflect current functionality
+- Removed some redundant things
+
 ## Bugs:
 - Form completion shows plain-text passwords
-- Maybe remnant menu tests
+- Remant JEST tests
 
 ## TO-DO:
 
@@ -95,11 +103,11 @@ ABANDON TDD FOR THIS PART
 - [X]  Implement form handling
 - [X]  Implement log-in & account creation
 - [X]  Create patient, professional, and admin menus
-- [ ]  Implement record handling
-- [ ]  Implement record fetching
-- [ ]  Implement find by NHI
+- [x]  Implement record handling
+- [x]  Implement record fetching
+- [x]  Implement find by NHI
 - [ ]  Implement record saving
 - [ ]  Implement record editing
-- [ ]  Implement patient flow
-- [ ]  Implement professional flow
-- [ ]  Implement admin flow
+- [x]  Implement patient flow
+- [x]  Implement professional flow
+- [x]  Implement admin flow

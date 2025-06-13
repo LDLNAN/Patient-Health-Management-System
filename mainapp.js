@@ -12,9 +12,6 @@ const PATIENTS_DB_PATH = './data/patients.json'
 
 const TITLE = 'HEALTH MANAGEMENT SYSTEM'
 
-const HEADER_LOGIN = 'Log-in'
-
-
 // Empty templates for new account creation and patient registration
 const EMPTY_USER_TEMPLATE = {
     nhi: null, // Will be filled for patients, null for professionals
@@ -105,6 +102,61 @@ const validateEmail = (email) => {
             /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) !== null
 }
 
+// Consolidated validation utility function
+const validateField = (field, fieldValue, formData) => {
+    // Required field check
+    if (field.required && !fieldValue) {
+        return { valid: false, message: field.label + " is required!" }
+    }
+    
+    // Email validation
+    if (field.name === "email" && fieldValue && !validateEmail(fieldValue)) {
+        return { valid: false, message: "Please enter a valid email address!" }
+    }
+    
+    // Password confirmation
+    if (field.name === "confirmPassword" && fieldValue !== formData.password) {
+        return { valid: false, message: "Passwords do not match!" }
+    }
+    
+    return { valid: true }
+}
+
+// Format patient record for display
+const formatPatientRecord = (patient) => {
+    if (!patient) return "No patient record found."
+    
+    return ("Name: " + patient.firstName + " " + patient.lastName + "\n" +
+            "NHI: " + patient.nhi + "\n" +
+            "Date of Birth: " + patient.dateOfBirth + "\n" +
+            "Gender: " + patient.gender + "\n" +
+            "Phone: " + patient.phone + "\n" +
+            "Email: " + patient.email + "\n\n" +
+            "Address:\n" +
+            "────────\n" +
+            patient.address.street + "\n" +
+            patient.address.city + ", " + patient.address.state + " " + patient.address.zipCode + "\n" +
+            patient.address.country + "\n\n" +
+            "Medical History:\n" +
+            "────────────────\n" +
+            "Blood Type: " + (patient.medicalHistory.bloodType || 'Not specified') + "\n" +
+            "Allergies: " + (patient.medicalHistory.allergies.length > 0 ? patient.medicalHistory.allergies.join(', ') : 'None listed') + "\n" +
+            "Current Medications: " + (patient.medicalHistory.currentMedications.length > 0 ? patient.medicalHistory.currentMedications.join(', ') : 'None listed') + "\n" +
+            "Notes: " + (patient.medicalHistory.notes || 'No additional notes') + "\n" +
+            "Assigned GP ID: " + (patient.assignedGP || 'Not assigned'))
+}
+
+// Format patient list for display
+const createPatientList = (patients) => {
+    let patientList = "Patient Records:\n═════════════════\n"
+    
+    patients.forEach((patient, index) => {
+        patientList += (index + 1) + ". " + patient.firstName + " " + patient.lastName + " (NHI: " + patient.nhi + ")\n"
+    })
+    
+    return patientList
+}
+
 // Unified message display and wait function
 const showMessageAndWait = async (message) => {
     currentScreen.message = message
@@ -145,7 +197,7 @@ const handleMenu = async (menu_obj) => {
     displayScreen(currentScreen)
     
     return new Promise((resolve) => {
-        rl.question('', (userInput) => {
+        rl.question('', async (userInput) => { // Now in async!
             const cleanedInput = cleanInput(userInput)
             
             // Check if selection exists in menu
@@ -156,19 +208,14 @@ const handleMenu = async (menu_obj) => {
                 resolve(null)
                 return
             }
-              const selectedItem = menu_obj[cleanedInput]
+            
+            const selectedItem = menu_obj[cleanedInput]
             const action = selectedItem.action
             
-            // Only handle string actions (APP_OBJ IDs)
+            // All actions are handled by goTo now
             if (typeof action === 'string') {
-                const appObj = findAppObject(action)
-                if (appObj) {
-                    goTo(appObj.id)
-                    resolve('goTo')
-                } else {
-                    // Function name - return it to be executed
-                    resolve(action)
-                }
+                await goTo(action)
+                resolve('goTo')
             } else {
                 resolve(null)
             }
@@ -200,6 +247,7 @@ const handleForm = async (form_obj) => {
     for (const field of form_obj.fields) {
         let fieldValue = ""
         let isValid = false
+        
           while (!isValid) {
             // Set up screen to show entire form with current progress
             currentScreen.title = TITLE
@@ -215,22 +263,14 @@ const handleForm = async (form_obj) => {
                 rl.question('', (input) => {
                     resolve(cleanInput(input))
                 })
-            })            
-            // Check required fields
-            if (field.required && !fieldValue) {
-                await showMessageAndWait(field.label + " is required!")
-                continue
-            }
+            })
             
-            // Email validation if field name is email
-            if (field.name === "email" && fieldValue && !validateEmail(fieldValue)) {
-                await showMessageAndWait("Please enter a valid email address!")
-                continue
-            }
-            
-            // Password confirmation validation
-            if (field.name === "confirmPassword" && fieldValue !== formData.password) {
-                await showMessageAndWait("Passwords do not match!")
+            // Check required fields and what-not
+            const validation = validateField(field, fieldValue, formData)
+            if (!validation.valid) {
+                await showMessageAndWait(validation.message)
+                // Clear the message and continue the loop to show the form again
+                currentScreen.message = null
                 continue
             }
             
@@ -265,6 +305,14 @@ const processForm = async (form_obj, formData) => {
         } else {
             await showMessageAndWait(result.message)
         }
+    } else if (form_obj.id === "SEARCH_PATIENT_FORM") {
+        const patient = findPatientByNHI(formData.nhi)
+        if (patient) {
+            await showPatientRecord(patient)
+            success = true
+        } else {
+            await showMessageAndWait("Patient with NHI " + formData.nhi + " not found!")
+        }
     } else {
         // Default form completion for unknown forms
         await showMessageAndWait("Form " + form_obj.name + " completed successfully!")
@@ -279,15 +327,77 @@ const processForm = async (form_obj, formData) => {
             await goTo(form_obj.next)
         }
     } else {
-        await goTo("LOGIN_MENU")
+        // If form failed, check if user is logged in.. This is just so you can go back if you accidentally enter a form
+        if (currentUser) {
+            // User is logged in, return to their role menu
+            await goTo(roleMenu())
+        } else {
+            // User not logged in, go to login menu
+            await goTo("LOGIN_MENU")
+        }
     }
 }
 
-const handleRecord = async (record_obj) => {
-    //TODO: Implement record handling functionality
+// ---- Records ----
+// This section handles patient record viewing and management.
+
+const showPatientRecord = async (patient) => {
+    currentScreen.title = TITLE
+    currentScreen.header = "Patient Medical Record"
+    currentScreen.body = formatPatientRecord(patient)
+    currentScreen.prompt = 'continue'
+    currentScreen.message = null
     
-    // Return to login menu for now
-    goTo("LOGIN_MENU")
+    displayScreen(currentScreen)
+    
+    await new Promise(resolve => {
+        rl.question('', () => resolve())
+    })
+    
+    // Return to appropriate menu based on user role
+    await goTo(roleMenu())
+}
+
+const showMyRecord = async () => {
+    if (!currentUser || !currentUser.nhi) {
+        await showMessageAndWait("Unable to access your medical record. Please contact support.")
+        await goTo(roleMenu())
+        return
+    }
+    
+    const patient = findPatientByNHI(currentUser.nhi)
+    if (!patient) {
+        await showMessageAndWait("Your medical record was not found. Please contact support.")
+        await goTo(roleMenu())
+        return
+    }
+    
+    await showPatientRecord(patient)
+}
+
+const showPatientList = async () => {
+    const patients = loadPatients()
+    
+    if (patients.length === 0) {
+        await showMessageAndWait("No patient records found.")
+        await goTo(roleMenu())
+        return
+    }
+    
+    currentScreen.title = TITLE
+    currentScreen.header = "All Patient Records"
+    currentScreen.body = createPatientList(patients) // Updated function name
+    currentScreen.prompt = 'continue'
+    currentScreen.message = null
+    
+    displayScreen(currentScreen)
+    
+    await new Promise(resolve => {
+        rl.question('', () => resolve())
+    })
+    
+    // Return to appropriate menu based on user role
+    await goTo(roleMenu())
 }
 
 // ---- Data ----
@@ -309,6 +419,20 @@ const saveUsers = (users) => {
     } catch (error) {
         return false
     }
+}
+
+const loadPatients = () => {
+    try {
+        const data = fs.readFileSync(PATIENTS_DB_PATH, 'utf8')
+        return JSON.parse(data)
+    } catch (error) {
+        return []
+    }
+}
+
+const findPatientByNHI = (nhi) => {
+    const patients = loadPatients()
+    return patients.find(patient => patient.nhi === parseInt(nhi))
 }
 
 const findUserByEmail = (email) => {
@@ -541,6 +665,28 @@ const APP_OBJ = [
             { name: "phone", type: "text", label: "Phone Number", required: false }
         ]
     },
+    {
+        id: "SEARCH_PATIENT_FORM",
+        type: "form",
+        name: "Search Patient by NHI",
+        next: "roleMenu",
+        fields: [
+            { name: "nhi", type: "text", label: "Patient NHI Number", required: true }
+        ]
+    },
+    // Records
+    {
+        id: "MY_PATIENT_RECORD",
+        type: "record",
+        name: "My Medical Record",
+        description: "View your personal medical record"
+    },
+    {
+        id: "VIEW_PATIENT_RECORDS_MENU",
+        type: "record",
+        name: "Patient Records List",
+        description: "View all patient records"
+    },
     // Menus
     {
         id: "LOGIN_MENU",
@@ -561,14 +707,10 @@ const APP_OBJ = [
         name: "Patient Dashboard",
         1: {
             title: "1. View My Medical Records",
-            action: "VIEW_PATIENT_RECORDS_MENU"
+            action: "MY_PATIENT_RECORD"
         },
         2: {
-            title: "2. Update My Account",
-            action: "UPDATE_ACCOUNT_FORM"
-        },
-        3: {
-            title: "3. Logout",
+            title: "2. Logout",
             action: "LOGIN_MENU" // Navigate to login menu to logout
         }
     },
@@ -585,11 +727,7 @@ const APP_OBJ = [
             action: "VIEW_PATIENT_RECORDS_MENU"
         },
         3: {
-            title: "3. Create New Patient Record", 
-            action: "CREATE_PATIENT_RECORD_FORM"
-        },
-        4: {
-            title: "4. Logout",
+            title: "3. Logout",
             action: "LOGIN_MENU" // Navigate to login menu to logout
         }
     },
@@ -606,11 +744,7 @@ const APP_OBJ = [
             action: "VIEW_PATIENT_RECORDS_MENU"
         },
         3: {
-            title: "3. Create New Patient Record",
-            action: "CREATE_PATIENT_RECORD_FORM"
-        },
-        4: {
-            title: "4. Logout",
+            title: "3. Logout",
             action: "LOGIN_MENU" // Navigate to login menu to logout
         }
     }
@@ -622,7 +756,7 @@ const goTo = async (objectId) => {
     if (objectId === "LOGIN_MENU") {
         if (currentUser) {
             await showMessageAndWait("You have been logged out successfully!")
-            logoutUser() // Use the existing logout function
+            logoutUser()
         }
     }
     
@@ -637,7 +771,16 @@ const goTo = async (objectId) => {
                 await handleForm(appObj)
                 break
             case 'record':
-                await handleRecord(appObj)
+                // Handle records directly in goTo
+                if (appObj.id === "MY_PATIENT_RECORD") {
+                    await showMyRecord()
+                } else if (appObj.id === "VIEW_PATIENT_RECORDS_MENU") {
+                    await showPatientList()
+                } else {
+                    // Default record handling
+                    await showMessageAndWait("Record type '" + appObj.name + "' not yet implemented!")
+                    await goTo(roleMenu())
+                }
                 break
             default:
                 currentScreen.message = "Unknown object type: " + appObj.type
@@ -662,13 +805,16 @@ startApp() // Start the application
 // ---- Testing ----
 // This section is for application tests using JEST.
 
-// ADD OTHER FUNCTIONS HERE AS THEY ARE DEVELOPED
+// ADD OTHER FUNCTIONS HERE AS THEY ARE DEVELOPED (DEPRECATED? I'M STILL ADDING THEM HERE FUCK YA)
 module.exports = {
     startApp,
     EMPTY_USER_TEMPLATE,
     EMPTY_PATIENT_TEMPLATE,
     cleanInput,
     validateEmail,
+    validateField,
+    formatPatientRecord,
+    createPatientList, // Updated function name
     showMessageAndWait,
     findAppObject,
     createMenu,
@@ -676,9 +822,13 @@ module.exports = {
     createForm,
     handleForm,
     processForm,
-    handleRecord,
+    showPatientRecord,
+    showMyRecord,
+    showPatientList,
     loadUsers,
     saveUsers,
+    loadPatients,
+    findPatientByNHI,
     findUserByEmail,
     createNewUser,
     authenticateUser,
