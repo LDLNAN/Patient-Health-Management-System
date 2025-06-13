@@ -84,11 +84,11 @@ let currentScreen = {
 const cleanInput = (input) => {
     // Handle non-string inputs by returning empty string
     if (typeof input !== 'string') {
-        return '';
+        return ''
     }
     
     // Trim whitespace and remove < > characters to prevent malicious external excecution
-    return input.trim().replace(/[<>]/g, '');
+    return input.trim().replace(/[<>]/g, '')
 }
 
 // Found: https://stackoverflow.com/questions/46155/how-can-i-validate-an-email-address-in-javascript
@@ -96,40 +96,296 @@ const cleanInput = (input) => {
 const validateEmail = (email) => {
     // Handle null, undefined, or non-string values
     if (!email || typeof email !== 'string') {
-        return false;
+        return false
     }
     
     return String(email)
         .toLowerCase()
         .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        ) !== null;
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) !== null
 }
+
+// Unified message display and wait function
+const showMessageAndWait = async (message) => {
+    currentScreen.message = message
+    displayScreen(currentScreen)
+    await new Promise(resolve => {
+        rl.question('', () => resolve())
+    })
+}
+
+// Find objects in APP_OBJ by their ID
+const findAppObject = (id) => {
+    return APP_OBJ.find(obj => obj.id === id)
+}
+
 
 // ---- Handlers ----
 // This section is for handling events, such as user prompts, and menu/form creation.
-const createMenu = (menu_obj) => { // Returns a string
-    // Handle null or undefined input
-    if (!menu_obj) {
-        return ""
-    }
+const createMenu = (menu_obj) => {
+    if (!menu_obj) return ""
     
-    // Handle empty object
-    if (Object.keys(menu_obj).length === 0) {
-        return ""
-    }
-    
-    // Extract titles from menu items and join with newlines
-    const menuItems = Object.values(menu_obj)
-    const titles = menuItems.map(item => item.title)
-    return titles.join("\n")
+    return Object.keys(menu_obj)
+        .filter(key => !isNaN(key)) // Only numeric keys
+        .map(key => menu_obj[key].title) // Map each title, based on filtered key
+        .join("\n")
 }
 
-const handleMenu = (menu_obj) => {
-
+const handleMenu = async (menu_obj) => {
+    // Set up the menu display
+    currentScreen.title = TITLE
+    currentScreen.header = menu_obj.name
+    currentScreen.body = createMenu(menu_obj)
+    
+    // Calculate number of menu items, valud menu items have numerical keys
+    const menuItemCount = Object.keys(menu_obj).filter(key => !isNaN(key)).length
+    currentScreen.prompt = "Select an option (1-" + menuItemCount.toString() + ")"
+    currentScreen.message = null
+    
+    displayScreen(currentScreen)
+    
+    return new Promise((resolve) => {
+        rl.question('', (userInput) => {
+            const cleanedInput = cleanInput(userInput)
+            
+            // Check if selection exists in menu
+            if (!menu_obj[cleanedInput]) {
+                // Invalid selection - set error message
+                currentScreen.message = "Invalid Selection!"
+                displayScreen(currentScreen)
+                resolve(null)
+                return
+            }
+              const selectedItem = menu_obj[cleanedInput]
+            const action = selectedItem.action
+            
+            // Only handle string actions (APP_OBJ IDs)
+            if (typeof action === 'string') {
+                const appObj = findAppObject(action)
+                if (appObj) {
+                    goTo(appObj.id)
+                    resolve('goTo')
+                } else {
+                    // Function name - return it to be executed
+                    resolve(action)
+                }
+            } else {
+                resolve(null)
+            }
+        })
+    })
 }
+
+const createForm = (form_obj, formData = {}) => {
+    if (!form_obj || !form_obj.fields) return ""
+    
+    // Create a display of all form fields with their current values
+    return form_obj.fields.map(field => { // For each field in obj
+            const value = formData[field.name] || ""
+            const displayValue = field.name.toLowerCase().includes("password") && value ? "*".repeat(value.length) : value
+            const optionalMark = field.required ? '' : ' *'
+            
+            if (value) {
+                return field.label + optionalMark + ": " + displayValue
+            } else {
+                return field.label + optionalMark + ": [ ]"
+            }
+        })
+        .join("\n")
+}
+
+const handleForm = async (form_obj) => {
+    const formData = {}
+    
+    for (const field of form_obj.fields) {
+        let fieldValue = ""
+        let isValid = false
+          while (!isValid) {
+            // Set up screen to show entire form with current progress
+            currentScreen.title = TITLE
+            currentScreen.header = form_obj.name
+            currentScreen.body = createForm(form_obj, formData)
+            currentScreen.prompt = "Enter " + field.label.toLowerCase()
+            currentScreen.message = null
+            
+            displayScreen(currentScreen)
+            
+            // Get user input
+            fieldValue = await new Promise((resolve) => {
+                rl.question('', (input) => {
+                    resolve(cleanInput(input))
+                })
+            })            
+            // Check required fields
+            if (field.required && !fieldValue) {
+                await showMessageAndWait(field.label + " is required!")
+                continue
+            }
+            
+            // Email validation if field name is email
+            if (field.name === "email" && fieldValue && !validateEmail(fieldValue)) {
+                await showMessageAndWait("Please enter a valid email address!")
+                continue
+            }
+            
+            // Password confirmation validation
+            if (field.name === "confirmPassword" && fieldValue !== formData.password) {
+                await showMessageAndWait("Passwords do not match!")
+                continue
+            }
+            
+            isValid = true
+        }
+        
+        formData[field.name] = fieldValue
+    }
+    // Process the completed form
+    await processForm(form_obj, formData)
+}
+
+const processForm = async (form_obj, formData) => {
+    if (form_obj.id === "USER_LOGIN_FORM") {
+        const result = authenticateUser(formData.email, formData.password)
+        if (result.success) {
+            loginUser(result.user)
+            await showMessageAndWait("Login successful! Welcome, " + result.user.firstName + "! Role: " + result.user.role)
+        } else {
+            await showMessageAndWait(result.message)
+        }
+    } else if (form_obj.id === "USER_CREATE_FORM") {
+        const { confirmPassword, ...userData } = formData
+        const result = createNewUser(userData)
+        
+        if (result.success) {
+            await showMessageAndWait(result.message + " Your NHI number is: " + result.user.nhi)
+        } else {
+            await showMessageAndWait(result.message)
+        }
+    } else {
+        // Default form completion for unknown forms
+        await showMessageAndWait("Form " + form_obj.name + " completed successfully!")
+    }
+    
+    // Always return to login menu
+    await goTo("LOGIN_MENU")
+}
+
+const handleRecord = async (record_obj) => {
+    //TODO: Implement record handling functionality
+    
+    // Return to login menu for now
+    goTo("LOGIN_MENU")
+}
+
 // ---- Data ----
 // This section is for managing data, including fetching, storing, and manipulating data used in the application.
+
+const loadUsers = () => {
+    try {
+        const data = fs.readFileSync(USERS_DB_PATH, 'utf8')
+        return JSON.parse(data)
+    } catch (error) {
+        return []
+    }
+}
+
+const saveUsers = (users) => {
+    try {
+        fs.writeFileSync(USERS_DB_PATH, JSON.stringify(users, null, 2))
+        return true
+    } catch (error) {
+        return false
+    }
+}
+
+const findUserByEmail = (email) => {
+    const users = loadUsers()
+    return users.find(user => user.email.toLowerCase() === email.toLowerCase())
+}
+
+const createNewUser = (userData) => {
+    const users = loadUsers()
+    
+    // Check if user already exists
+    if (findUserByEmail(userData.email)) {
+        return { success: false, message: "User with this email already exists!" }
+    }
+    
+    // Create new user object based on template
+    const newUser = { ...EMPTY_USER_TEMPLATE, ...userData }
+    
+    // Set role to patient by default for new registrations
+    if (!newUser.role) {
+        newUser.role = "patient"
+    }
+    
+    // Generate NHI for patients or ID for professionals
+    if (newUser.role === "patient") {
+        newUser.nhi = generateNHI()
+        newUser.id = null
+    } else if (newUser.role === "professional") {
+        newUser.id = generateProfessionalId()
+        newUser.nhi = null
+    }
+    
+    users.push(newUser)
+    
+    if (saveUsers(users)) {
+        return { success: true, message: "Account created successfully!", user: newUser }
+    } else {
+        return { success: false, message: "Failed to save user data!" }
+    }
+}
+
+const generateNHI = () => {
+    const users = loadUsers()
+    let newNHI
+    
+    do { // Generate numbers until unique
+        newNHI = Math.floor(Math.random() * 800000) + 200000 // Generate between 200000-999999
+    } while (users.some(user => user.nhi === newNHI))
+    
+    return newNHI
+}
+
+const generateProfessionalId = () => {
+    const users = loadUsers()
+    let newId
+    
+    do {
+        newId = Math.floor(Math.random() * 90000) + 10000 // Generate between 10000-99999
+    } while (users.some(user => user.id === newId))
+    
+    return newId
+}
+
+// ---- Authentication ----
+// This section handles user authentication, login/logout, and session management.
+
+const authenticateUser = (email, password) => {
+    const user = findUserByEmail(email)
+    
+    if (!user) {
+        return { success: false, message: "User not found!" }
+    }
+    
+    // In a real application, passwords would be hashed
+    if (user.password !== password) {
+        return { success: false, message: "Invalid password!" }
+    }
+    
+    return { success: true, message: "Login successful!", user: user }
+}
+
+const loginUser = (user) => {
+    currentUser = user
+    return true
+}
+
+const logoutUser = () => {
+    currentUser = null
+    return true
+}
 
 // ---- Display ----
 // This section is for managing the user interface (CLI-ish), console.logs, handling user interactions, and updating the UI.
@@ -167,7 +423,7 @@ const displayBody = (body) => {
     console.log(body);
 }
 
-const displayPrompt = (prompt) => {
+const displayPrompt = (prompt) => { // Deprecated?
     // Handle null prompt case - don't display anything
     if (prompt === null || prompt === undefined) { // Needed else empty strings fail?
         return;
@@ -222,7 +478,7 @@ const displayScreen = (currentScreen) => {
         return;
     }
     
-    // Normal mode - display all components
+    // Display all components
     displayTitle(currentScreen.title);
     displayHeader(currentScreen.header);
     displayBody(currentScreen.body);
@@ -231,57 +487,81 @@ const displayScreen = (currentScreen) => {
 // ---- Flow ----
 // This section manages the flow of the application, including navigation, what happens when.
 
-const goToMenu = (menu_obj) => {
-    currentScreen.title = TITLE
-    currentScreen.header = menu_obj.name
-    currentScreen.body = createMenu(menu_obj)
-    
-    // Calculate number of menu items (- the 'name' property)
-    const menuItemCount = Object.keys(menu_obj).length - 1
-    currentScreen.prompt = "Select an option (1-" + menuItemCount.toString() + ")"
-    
-    currentScreen.message = null
-    displayScreen(currentScreen)
-    handleMenu(menu_obj)
-}
-
-const goToForm = (form_obj) => {
-
-}
-
-const goToRecord = (record_obj) => {
-    
-}
-
-// ---- Menu Configs ----
-// This section contains menu item configurations for the application interface.
-
-// Login screen menu items
-const LOGIN_MENU_ITEMS = {
-    name: "User Authentication",
-    1: {
-        title: "1. Login (Existing user)",
-        action: "startUserLogin"
+// Unified App Object - All forms, menus, and records are consolidated into a single APP_OBJ array
+const APP_OBJ = [    
+    // Forms
+    {
+        id: "USER_LOGIN_FORM",
+        type: "form",
+        name: "User Login",
+        fields: [
+            { name: "email", type: "text", label: "Email Address", required: true },
+            { name: "password", type: "password", label: "Password", required: true }
+        ]
     },
-    2: {
-        title: "2. Create an account (New user)",
-        action: "startUserCreate"
+    {
+        id: "USER_CREATE_FORM",
+        type: "form", 
+        name: "Create Account",
+        fields: [
+            { name: "firstName", type: "text", label: "First Name", required: true },
+            { name: "lastName", type: "text", label: "Last Name", required: true },
+            { name: "email", type: "text", label: "Email Address", required: true },
+            { name: "password", type: "password", label: "Password", required: true },
+            { name: "confirmPassword", type: "password", label: "Confirm Password", required: true },
+            { name: "phone", type: "text", label: "Phone Number", required: false }
+        ]
+    },
+    // Menus
+    {
+        id: "LOGIN_MENU",
+        type: "menu",
+        name: "User Authentication",
+        1: {
+            title: "1. Login (Existing user)",
+            action: "USER_LOGIN_FORM"
+        },
+        2: {
+            title: "2. Create an account (New user)",
+            action: "USER_CREATE_FORM"
+        }
+    }
+]
+
+// Navigation function
+const goTo = async (objectId) => {
+    const appObj = findAppObject(objectId)
+    
+    if (appObj) {
+        switch (appObj.type) {
+            case 'menu':
+                await handleMenu(appObj)
+                break
+            case 'form':
+                await handleForm(appObj)
+                break
+            case 'record':
+                await handleRecord(appObj)
+                break
+            default:
+                currentScreen.message = "Unknown object type: " + appObj.type
+                displayScreen(currentScreen)
+        }
+    } else {
+        currentScreen.message = "Object with ID '" + objectId + "' not found!"
+        displayScreen(currentScreen)
     }
 }
-
-// ---- Form Configs ----
-// This section contains form configurations for data input.
-
-// ---- Record Configs ----
-// This section contains record configurations for data management.
 
 // ---- Main ----
 // This section is the entry point of the application, where everything comes together and starts running.
 
 const startApp = () => {
+    console.log("Starting Patient Health Management System...")
+    goTo("LOGIN_MENU")
 }
 
-// startApp() // Commented out to prevent auto-execution
+startApp() // Start the application
 
 // ---- Testing ----
 // This section is for application tests using JEST.
@@ -293,17 +573,28 @@ module.exports = {
     EMPTY_PATIENT_TEMPLATE,
     cleanInput,
     validateEmail,
+    showMessageAndWait,
+    findAppObject,
     createMenu,
     handleMenu,
-    currentScreen,  // Add this
+    createForm,
+    handleForm,
+    processForm,
+    handleRecord,
+    loadUsers,
+    saveUsers,
+    findUserByEmail,
+    createNewUser,
+    authenticateUser,
+    loginUser,
+    logoutUser,
+    currentScreen,
     displayTitle,
     displayHeader,
     displayBody,
     displayPrompt,
     displayMessage,
     displayScreen,
-    LOGIN_MENU_ITEMS,
-    goToMenu,
-    goToForm,
-    goToRecord
+    APP_OBJ,
+    goTo
 }

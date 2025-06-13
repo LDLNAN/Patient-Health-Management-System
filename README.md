@@ -2,7 +2,7 @@
 
 ## Overview
 
-CLI Patient Health Record Management System project, developed as a proof of concept. The primary goal of this project is to create a secure, efficient, and maintainable system for managing individual patient health profiles. It aims to address the common challenge of fragmented patient information, providing a centralized solution for healthcare professionals and patients.
+CLI Patient Health Record Management System student project, developed as a proof of concept. The primary goal of this project is to create a secure, efficient, and maintainable system for managing individual patient health profiles. It aims to address the common challenge of fragmented patient information, providing a centralized solution for healthcare professionals and patients.
 
 ## How to Run the Application
 
@@ -50,6 +50,7 @@ Code is organized into distinct, modular sections within `mainapp.js` for clarit
 - **`Utilities`**: This section contains utility functions that can be used throughout the application.
 - **`Handlers`**: This section is for handling events, such as user prompts, and menu/form creation.
 - **`Data`**: This section is for managing data, including fetching, storing, and manipulating data used in the application.
+- **`Authentication`**: This section is for user authentication, such as logging in, logging out, and checking credentials.
 - **`Display`**: This section is for managing the user interface (basic CLI), console.logs, handling user interactions, and updating the UI.
 - **`Flow`**: This section manages the flow of the application, including navigation, what happens when.
 - **`Main`**: This section is the entry point of the application, where everything comes together and starts running.
@@ -59,6 +60,24 @@ Code is organized into distinct, modular sections within `mainapp.js` for clarit
 
 This project adheres to the Extreme Programming (XP) methodology, with an emphasis on Test-Driven, iterative, and simple development.
 
+## Changelog
+
+### 2025-06-14
+ABANDON TDD FOR THIS PART
+- Added authentication header
+- Consolidated all forms, menus, and records into unified `APP_OBJ` array
+- Moved functions to appropriate sections
+- Added form and menu creation and handling
+- Added `showShowAndWait()` helper function to eliminate repeated message handling code
+- Consolidated `goTo()` function
+- Added `nextAction` property to forms for configurable post-completion navigation
+- User authentication functionality
+- General clean-up
+
+## Bugs:
+- Form completion shows plain-text passwords
+- Maybe remnant menu tests
+
 ## TO-DO:
 
 - [x]  Create databases with ‘Faker’
@@ -67,10 +86,10 @@ This project adheres to the Extreme Programming (XP) methodology, with an emphas
 - [x]  Implement email REGEX
 - [X]  Create Menu, Form, and Record objects
 - [X]  Implement display
-- [ ]  Implement menu handling
-- [ ]  Implement form handling
-- [ ]  Implement record handling
+- [X]  Implement menu handling
+- [X]  Implement form handling
 - [ ]  Implement log-in & account creation
+- [ ]  Implement record handling
 - [ ]  Implement record fetching
 - [ ]  Implement find by NHI
 - [ ]  Implement record saving
