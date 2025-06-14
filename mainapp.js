@@ -244,11 +244,14 @@ const handleForm = async (form_obj) => {
 }
 
 const processForm = async (form_obj, formData) => {
+    let success = false
+    
     if (form_obj.id === "USER_LOGIN_FORM") {
         const result = authenticateUser(formData.email, formData.password)
         if (result.success) {
             loginUser(result.user)
             await showMessageAndWait("Login successful! Welcome, " + result.user.firstName + "! Role: " + result.user.role)
+            success = true
         } else {
             await showMessageAndWait(result.message)
         }
@@ -258,16 +261,26 @@ const processForm = async (form_obj, formData) => {
         
         if (result.success) {
             await showMessageAndWait(result.message + " Your NHI number is: " + result.user.nhi)
+            success = true
         } else {
             await showMessageAndWait(result.message)
         }
     } else {
         // Default form completion for unknown forms
         await showMessageAndWait("Form " + form_obj.name + " completed successfully!")
+        success = true
     }
     
-    // Always return to login menu
-    await goTo("LOGIN_MENU")
+    // Navigate based on success/failure and form's next property
+    if (success && form_obj.next) {
+        if (form_obj.next === "roleMenu") { // Should probably add function handling into goTo... but this works
+            await goTo(roleMenu())
+        } else {
+            await goTo(form_obj.next)
+        }
+    } else {
+        await goTo("LOGIN_MENU")
+    }
 }
 
 const handleRecord = async (record_obj) => {
@@ -387,6 +400,20 @@ const logoutUser = () => {
     return true
 }
 
+const roleMenu = () => {
+    if (!currentUser) {
+        return "LOGIN_MENU"
+    }
+    
+    const roleMenuMap = {
+        "patient": "PATIENT_MENU",
+        "professional": "PROFESSIONAL_MENU", 
+        "admin": "ADMIN_MENU"
+    }
+    
+    return roleMenuMap[currentUser.role] || "LOGIN_MENU"
+}
+
 // ---- Display ----
 // This section is for managing the user interface (CLI-ish), console.logs, handling user interactions, and updating the UI.
 const displayTitle = (title) => {
@@ -494,6 +521,7 @@ const APP_OBJ = [
         id: "USER_LOGIN_FORM",
         type: "form",
         name: "User Login",
+        next: "roleMenu",
         fields: [
             { name: "email", type: "text", label: "Email Address", required: true },
             { name: "password", type: "password", label: "Password", required: true }
@@ -503,6 +531,7 @@ const APP_OBJ = [
         id: "USER_CREATE_FORM",
         type: "form", 
         name: "Create Account",
+        next: "LOGIN_MENU",
         fields: [
             { name: "firstName", type: "text", label: "First Name", required: true },
             { name: "lastName", type: "text", label: "Last Name", required: true },
@@ -524,6 +553,65 @@ const APP_OBJ = [
         2: {
             title: "2. Create an account (New user)",
             action: "USER_CREATE_FORM"
+        }
+    },
+    {
+        id: "PATIENT_MENU",
+        type: "menu",
+        name: "Patient Dashboard",
+        1: {
+            title: "1. View My Medical Records",
+            action: "VIEW_PATIENT_RECORDS_MENU"
+        },
+        2: {
+            title: "2. Update My Account",
+            action: "UPDATE_ACCOUNT_FORM"
+        },
+        3: {
+            title: "3. Logout",
+            action: "logoutUser"
+        }
+    },
+    {
+        id: "PROFESSIONAL_MENU",
+        type: "menu", 
+        name: "Healthcare Professional Dashboard",
+        1: {
+            title: "1. Search Patient by NHI",
+            action: "SEARCH_PATIENT_FORM"
+        },
+        2: {
+            title: "2. View Patient Records",
+            action: "VIEW_PATIENT_RECORDS_MENU"
+        },
+        3: {
+            title: "3. Create New Patient Record", 
+            action: "CREATE_PATIENT_RECORD_FORM"
+        },
+        4: {
+            title: "4. Logout",
+            action: "logoutUser"
+        }
+    },
+    {
+        id: "ADMIN_MENU",
+        type: "menu",
+        name: "Administrator Dashboard", 
+        1: {
+            title: "1. Search Patient by NHI",
+            action: "SEARCH_PATIENT_FORM"
+        },
+        2: {
+            title: "2. View Patient Records",
+            action: "VIEW_PATIENT_RECORDS_MENU"
+        },
+        3: {
+            title: "3. Create New Patient Record",
+            action: "CREATE_PATIENT_RECORD_FORM"
+        },
+        4: {
+            title: "4. Logout",
+            action: "logoutUser"
         }
     }
 ]
@@ -588,6 +676,7 @@ module.exports = {
     authenticateUser,
     loginUser,
     logoutUser,
+    roleMenu,
     currentScreen,
     displayTitle,
     displayHeader,

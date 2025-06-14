@@ -74,6 +74,11 @@ ABANDON TDD FOR THIS PART
 - User authentication functionality
 - General clean-up
 
+### 2025-06-14
+- Created patient, professional, and admin menu objects
+- Created roleMenu function, that returns the correct menu for a users role
+- Updated process form to navigate based on success
+
 ## Bugs:
 - Form completion shows plain-text passwords
 - Maybe remnant menu tests
@@ -88,7 +93,8 @@ ABANDON TDD FOR THIS PART
 - [X]  Implement display
 - [X]  Implement menu handling
 - [X]  Implement form handling
-- [ ]  Implement log-in & account creation
+- [X]  Implement log-in & account creation
+- [X]  Create patient, professional, and admin menus
 - [ ]  Implement record handling
 - [ ]  Implement record fetching
 - [ ]  Implement find by NHI
