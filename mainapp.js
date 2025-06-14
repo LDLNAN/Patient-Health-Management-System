@@ -569,7 +569,7 @@ const APP_OBJ = [
         },
         3: {
             title: "3. Logout",
-            action: "logoutUser"
+            action: "LOGIN_MENU" // Navigate to login menu to logout
         }
     },
     {
@@ -590,7 +590,7 @@ const APP_OBJ = [
         },
         4: {
             title: "4. Logout",
-            action: "logoutUser"
+            action: "LOGIN_MENU" // Navigate to login menu to logout
         }
     },
     {
@@ -611,13 +611,21 @@ const APP_OBJ = [
         },
         4: {
             title: "4. Logout",
-            action: "logoutUser"
+            action: "LOGIN_MENU" // Navigate to login menu to logout
         }
     }
 ]
 
 // Navigation function
 const goTo = async (objectId) => {
+    // Log out when goTo(LOGIN_MENU) is called
+    if (objectId === "LOGIN_MENU") {
+        if (currentUser) {
+            await showMessageAndWait("You have been logged out successfully!")
+            logoutUser() // Use the existing logout function
+        }
+    }
+    
     const appObj = findAppObject(objectId)
     
     if (appObj) {
